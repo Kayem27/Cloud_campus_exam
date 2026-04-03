@@ -1,5 +1,6 @@
 // gateway/server.js
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 //const authProxy = require('./routes/auth');
 const notifiProxy = require('./routes/notifi');
@@ -9,7 +10,8 @@ dotenv.config();
 
 const app = express();
 
-// Middleware pour analyser les requêtes JSON
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // Routes principales pour chaque microservice
@@ -18,7 +20,7 @@ app.use('/notify', notifiProxy);
 app.use('/update-stock', stockProxy);
 
 // Lancer le Gateway
-const PORT = process.env.GATEWAY_PORT || 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Gateway opérationnel sur le port ${PORT}`);
 });
