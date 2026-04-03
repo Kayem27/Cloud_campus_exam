@@ -1,22 +1,19 @@
-// backend/middlewares/authMiddleware.js
 const jwt = require('jsonwebtoken');
+const logger = require('../config/logger');
 
 exports.authenticateToken = (req, res, next) => {
+  // Lire le token depuis le cookie HTTPOnly (prioritaire) ou le header Authorization (fallback)
+  const token = req.cookies?.token || req.headers['authorization']?.split(' ')[1];
 
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.sendStatus(401);
+  if (!token) return res.status(401).json({ message: 'Authentification requise.' });
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        console.error('Erreur de vérification du token upd');
-        return res.status(403).json({ error: true, message: 'Token invalide upd' });
-      }
-      req.user = user;
-      next();
-    });
-  } catch (error) { 
-    return res.status(403).json({ error: true, message: 'Token invalide' });
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = user;
+    next();
+  } catch (error) {
+    logger.warn('Token invalide ou expiré');
+    return res.status(403).json({ message: 'Token invalide ou expiré.' });
   }
 };
 

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm update:*)",
+      "Bash(npm audit:*)",
+      "Bash(npx update-browserslist-db@latest -y)",
+      "Bash(npm install:*)",
+      "Bash(CI=false npx react-scripts build)"
+    ]
+  }
+}

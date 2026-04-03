@@ -1,15 +1,29 @@
 {
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "seeder": "node seeder.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "debug": "^4.3.7",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-rate-limit": "^8.3.2",
+    "helmet": "^8.1.0",
+    "joi": "^18.1.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.1"
+    "mongoose": "^8.8.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1"
   }
 }

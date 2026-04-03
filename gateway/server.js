@@ -20,7 +20,7 @@ app.use('/notify', notifiProxy);
 app.use('/update-stock', stockProxy);
 
 // Lancer le Gateway
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.GATEWAY_PORT || process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Gateway opérationnel sur le port ${PORT}`);
 });
