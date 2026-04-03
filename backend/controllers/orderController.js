@@ -5,11 +5,7 @@ const orderLog = require('debug')('orderRoutes:console')
 
 
 exports.createOrder = async (req, res) => {
-  //userLog(`user is ${JSON.stringify(req.user)}`)
-  console.log(`user is in createOrder ${JSON.stringify(req.user)}`)
-  //const { items, shippingAddress, paymentMethod } = req.body;
   const { items, shippingAddress, paymentMethod, shippingMethod, } = req.body;
-  console.log(`items are ${JSON.stringify(req.body)}`)
   //const { items } = req.body;
   let userId = req.user.userId;
   // let shippingAddress = {
@@ -32,7 +28,6 @@ exports.createOrder = async (req, res) => {
   try {
     // Logique pour préparer les détails de la commande
     const orderDetails = items.map(({ productId, quantity, price }) => {
-      console.log(`Produit ID : ${productId}, Quantité : ${quantity}, Price ${price}`);
       return { productId, quantity, price };
     });
 
@@ -54,11 +49,9 @@ exports.createOrder = async (req, res) => {
     // Sauvegarder la commande dans la base de données
     const savedOrder = await newOrder.save();
 
-    console.log('Commande sauvegardée :', savedOrder);
-
     // Appel au micro-service de notification
     try {
-      await axios.post('http://localhost:8000/notify', {
+      await axios.post(`${process.env.GATEWAY_URL || 'http://localhost:8000'}/notify`, {
         to: 'syaob@yahoo.fr',
         subject: 'Nouvelle Commande Créée',
         text: `Une commande a été créée avec succès pour les produits suivants : \n${orderDetails
@@ -149,7 +142,6 @@ exports.createOrder = async (req, res) => {
 
 exports.deleteOrder = async(req, res)=>{
     const { orderId } = req.body;
-    console.log(`orderId to delete is ${orderId}`)
 }
 
 exports.getOrders = async(req, res)=>{
@@ -168,7 +160,6 @@ exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
 
-  console.log(`dump console log order id => ${orderId} status = ${status}`);
   try {
     // Vérification des données
     if (!status) {

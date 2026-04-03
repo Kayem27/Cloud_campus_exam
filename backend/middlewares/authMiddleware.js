@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 exports.authenticateToken = (req, res, next) => {
 
   const token = req.headers['authorization']?.split(' ')[1];
-  console.log(`token is ${token}`)
   if (!token) return res.sendStatus(401);
 
   try {

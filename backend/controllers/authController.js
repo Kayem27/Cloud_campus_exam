@@ -9,20 +9,17 @@ const authLog = require('debug')('authRoutes:console')
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
-  authLog(`username is ${username} password is ${password}`);
+  authLog(`login attempt for username: ${username}`);
 
 
   try {
     const user = await User.findOne({ username });
-    authLog(`user is ${JSON.stringify(user)}`)
-    if (!user) return res.status(400).json({ message: 'Utilisateur non trouvé' });
+    if (!user) return res.status(400).json({ message: 'Identifiants incorrects' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Mot de passe incorrect' });
+    if (!isMatch) return res.status(400).json({ message: 'Identifiants incorrects' });
 
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    authLog(`token is ${token}`)
-
     res.json({ token, role: user.role, username: user.username });
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur' });
@@ -32,22 +29,19 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
-  authLog(`username is ${username} email is ${email} password is ${password}`);
+  authLog(`register attempt for username: ${username}`);
 
   try {
     // Vérifier si l'email ou le nom d'utilisateur existe déjà
     const existingUser = await User.findOne({ email });
     
     if (existingUser) {
-      authLog(`user exist => ${JSON.stringify(existingUser)}`)
       return res.status(400).json({ message: 'Cet email est déjà utilisé.' });
     }
 
     // Créer un nouvel utilisateur
     const user = new User({ username, email, password });
     await user.save();
-
-    authLog(`user after creation => ${JSON.stringify(user)}`)
 
     // Envoyer un email de bienvenue
     // await sendEmail(
