@@ -14,9 +14,16 @@ const schemas = {
       .messages({ 'string.empty': 'Le nom d\'utilisateur est requis.' }),
     email: Joi.string().email().required()
       .messages({ 'string.email': 'L\'email doit être valide.' }),
-    password: Joi.string().min(6).required()
+    password: Joi.string()
+      .min(12)
+      .pattern(/[A-Z]/)
+      .pattern(/[a-z]/)
+      .pattern(/[0-9]/)
+      .pattern(/[@$!%*?&.#^()_+\-=]/)
+      .required()
       .messages({
-        'string.min': 'Le mot de passe doit contenir au moins 6 caractères.',
+        'string.min': 'Le mot de passe doit contenir au moins 12 caractères.',
+        'string.pattern.base': 'Le mot de passe doit contenir au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial (@$!%*?&...).',
         'string.empty': 'Le mot de passe est requis.',
       }),
   }),
